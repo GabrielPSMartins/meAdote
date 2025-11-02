@@ -1,29 +1,20 @@
 import 'package:flutter/material.dart';
-
-// Tema e controladores
 import 'nucleo/theme.dart';
 import 'nucleo/control_tema.dart';
 import 'theme/app_theme.dart';
-
-// Telas principais
 import 'pages/begin/begin.dart';
-//import 'pages/buscar/buscar.dart';
-//import 'pages/favoritos/favoritos.dart';
-//import 'paginas/educacao/educacao.dart';
 import 'pages/profile/profile.dart';
-
-// Telas de entrada
 import 'screens/onboarding_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/register_organization_screen.dart';
 
 void main() {
-  runApp(const MeAdoteApp());
+  runApp(MeAdoteApp());
 }
 
 class MeAdoteApp extends StatelessWidget {
-  const MeAdoteApp({Key? key}) : super(key: key);
+  MeAdoteApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +24,17 @@ class MeAdoteApp extends StatelessWidget {
         return MaterialApp(
           title: 'MeAdote',
           debugShowCheckedModeBanner: false,
-          theme: temaClaro,                // tema claro do seu núcleo
-          darkTheme: temaEscuro,           // tema escuro do seu núcleo
-          themeMode: mode,                 // alterna conforme controlador
+          theme: temaClaro,
+          darkTheme: temaEscuro,
+          themeMode: mode,
           initialRoute: '/',
           routes: {
-            // fluxo inicial
-            '/': (context) => const OnboardingScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/register': (context) => const RegisterScreen(),
-            '/register_org': (context) => const RegisterOrganizationScreen(),
-            '/profile': (context) => const ProfilePage(),
-
-            // núcleo principal
-            '/home': (context) => const HomeShell(),
+            '/': (context) => OnboardingScreen(),
+            '/login': (context) => LoginScreen(),
+            '/register': (context) => RegisterScreen(),
+            '/register_org': (context) => RegisterOrganizationScreen(),
+            '/profile': (context) => ProfilePage(),
+            '/home': (context) => HomeShell(),
           },
         );
       },
@@ -55,7 +43,7 @@ class MeAdoteApp extends StatelessWidget {
 }
 
 class HomeShell extends StatefulWidget {
-  const HomeShell({Key? key}) : super(key: key);
+  HomeShell({Key? key}) : super(key: key);
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -66,9 +54,6 @@ class _HomeShellState extends State<HomeShell> {
 
   final pages = [
     BeginPage(),
-    //BuscarPage(),
-    //FavoritosPage(),
-    //EducacaoPage(),
     ProfilePage(),
   ];
 
@@ -86,12 +71,9 @@ class _HomeShellState extends State<HomeShell> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Buscar'),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: 'Favoritos'),
-          BottomNavigationBarItem(icon: Icon(Icons.school), label: 'Educação'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         ],
-     ),
-);
-}
+      ),
+    );
+  }
 }
