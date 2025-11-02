@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CampoText extends StatelessWidget {
+/// Campo de texto simples usado em telas secundárias e formulários diretos.
+class TextFieldWidget extends StatelessWidget {
   final String hint;
   final TextEditingController? controller;
   final bool obscure;
   final TextInputType? keyboardType;
-  CampoText({required this.hint, this.controller, this.obscure = false, this.keyboardType});
+
+  const TextFieldWidget({
+    super.key,
+    required this.hint,
+    this.controller,
+    this.obscure = false,
+    this.keyboardType,
+  });
 
   @override
   Widget build(BuildContext context) {

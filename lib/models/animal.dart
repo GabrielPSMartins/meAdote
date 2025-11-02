@@ -1,36 +1,37 @@
 class Animal {
-  final String nome;
-  final String especie;
-  final String raca;
-  final int idade;
-  final String porte;
-  final String imagemUrl;
+  final String name;
+  final String species;
+  final String breed;
+  final int age;
+  final String size;
+  final String imageUrl;
 
   Animal({
-    required this.nome,
-    required this.especie,
-    required this.raca,
-    required this.idade,
-    required this.porte,
-    required this.imagemUrl,
+    required this.name,
+    required this.species,
+    required this.breed,
+    required this.age,
+    required this.size,
+    required this.imageUrl,
   });
 }
 
+// Lista de animais simulada (mock data)
 final mockAnimals = [
   Animal(
-    nome: 'Thor',
-    especie: 'Cachorro',
-    raca: 'Bulldog',
-    idade: 1,
-    porte: 'Pequeno',
-    imagemUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee',
+    name: 'Thor',
+    species: 'Cachorro', 
+    breed: 'Bulldog',
+    age: 1,
+    size: 'Pequeno',
+    imageUrl: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee',
   ),
   Animal(
-    nome: 'Mimi',
-    especie: 'Gato',
-    raca: 'Siames',
-    idade: 3,
-    porte: 'Pequeno',
-    imagemUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006',
+    name: 'Mimi',
+    species: 'Gato',
+    breed: 'Siames',
+    age: 3,
+    size: 'Pequeno',
+    imageUrl: 'https://images.unsplash.com/photo-1574158622682-e40e69881006',
   ),
 ];

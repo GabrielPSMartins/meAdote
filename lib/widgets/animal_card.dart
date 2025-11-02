@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/animal.dart';
 
-class CardAnimal extends StatelessWidget {
+/// Card reutilizável para exibir informações básicas de um animal.
+class AnimalCard extends StatelessWidget {
   final Animal animal;
   final VoidCallback onTap;
 
-  const CardAnimal({required this.animal, required this.onTap});
+  const AnimalCard({
+    super.key,
+    required this.animal,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,23 +20,26 @@ class CardAnimal extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         color: Theme.of(context).cardColor,
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Image.network(
-                  animal.imagemUrl,
+                  animal.imageUrl,
                   width: 84,
                   height: 84,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => 
-                    Container(
-                      width: 84,
-                      height: 84,
-                      color: const Color(0xFF2A2A2A),
-                      child: const Icon(Icons.pets, color: Colors.white30, size: 36),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 84,
+                    height: 84,
+                    color: const Color(0xFF2A2A2A),
+                    child: const Icon(
+                      Icons.pets,
+                      color: Colors.white30,
+                      size: 36,
                     ),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -40,17 +48,20 @@ class CardAnimal extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      animal.nome,
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      animal.name,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '${animal.especie} • ${animal.raca}',
+                      '${animal.species} • ${animal.breed}',
                       style: const TextStyle(color: Color(0xFFB3B3B3)),
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '${animal.idade} anos • ${animal.porte}',
+                      '${animal.age} anos • ${animal.size}',
                       style: const TextStyle(color: Color(0xFFB3B3B3)),
                     ),
                   ],
@@ -70,5 +81,4 @@ class CardAnimal extends StatelessWidget {
       ),
     );
   }
-  
 }

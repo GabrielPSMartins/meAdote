@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../nucleo/control_tema.dart';
-import '../../pages/login/login.dart';
+import '../../core/theme_controller.dart';
+import '../login/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +65,13 @@ class ProfilePage extends StatelessWidget {
                 title: const Text('Tema'),
                 subtitle: const Text('Alternar entre claro e escuro'),
                 trailing: ValueListenableBuilder(
-                  valueListenable: temaController,
+                  valueListenable: themeController,
                   builder: (_, mode, __) {
-                    final isDark = temaController.value == ThemeMode.dark;
+                    final isDark = themeController.value == ThemeMode.dark;
                     return Switch(
                       value: isDark,
                       onChanged: (val) {
-                        temaController.value =
+                        themeController.value =
                             isDark ? ThemeMode.light : ThemeMode.dark;
                       },
                     );
