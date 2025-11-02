@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/primary_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,12 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Imagem com gradiente e bordas arredondadas
                 Container(
                   height: size.height * 0.3,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                         color: Colors.black26,
                         blurRadius: 8,
@@ -56,9 +55,7 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 32),
-
                 Text(
                   'MeAdote',
                   style: Theme.of(context)
@@ -76,9 +73,7 @@ class OnboardingScreen extends StatelessWidget {
                       .bodyMedium
                       ?.copyWith(height: 1.4),
                 ),
-
                 const SizedBox(height: 36),
-
                 PrimaryButton(
                   label: 'Começar Jornada',
                   onTap: () => Navigator.pushNamed(context, '/register'),
@@ -88,9 +83,7 @@ class OnboardingScreen extends StatelessWidget {
                   label: 'Cadastrar Organização',
                   onTap: () => Navigator.pushNamed(context, '/register_org'),
                 ),
-
                 const SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
@@ -106,9 +99,7 @@ class OnboardingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
                 TextButton(
                   onPressed: () => Navigator.pushNamed(context, '/login'),
                   child: Text(

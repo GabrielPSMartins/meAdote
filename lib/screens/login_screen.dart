@@ -3,12 +3,12 @@ import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
-    final passController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return Scaffold(
       body: SafeArea(
@@ -26,7 +26,6 @@ class LoginScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
-
               CustomTextField(
                 hint: 'Email',
                 controller: emailController,
@@ -35,9 +34,8 @@ class LoginScreen extends StatelessWidget {
               CustomTextField(
                 hint: 'Senha',
                 obscure: true,
-                controller: passController,
+                controller: passwordController,
               ),
-
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
@@ -45,22 +43,17 @@ class LoginScreen extends StatelessWidget {
                   child: const Text('Esqueceu a senha?'),
                 ),
               ),
-
               const SizedBox(height: 12),
-
               PrimaryButton(
                 label: 'Entrar',
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/profile');
                 },
               ),
-
               const SizedBox(height: 12),
-
               OutlinedButton(
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/register'),
-                child: const Text('ONG/ Protetor - Criar uma conta'),
+                onPressed: () => Navigator.pushNamed(context, '/register'),
+                child: const Text('ONG / Protetor - Criar uma conta'),
               ),
             ],
           ),

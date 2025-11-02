@@ -3,5 +3,9 @@ class PlaceholderModel {
   final String title;
   final String subtitle;
 
-  PlaceholderModel({required this.id, required this.title, required this.subtitle});
+  PlaceholderModel({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+  });
 }

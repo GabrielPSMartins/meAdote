@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final Color fundoEscuro = Color(0xFF1E1E1E);
-final Color fundoClaro = Colors.white;
-final Color cartaEscura = Color(0xFF000000);
-final Color cartaClara = Color(0xFFF7F7F7);
-final Color textoClaro = Color(0xFFFEF6EE);
-final Color textoEscuro = Colors.black87;
-final Color textoSec = Color(0xFFB3B3B3);
-final Color textoSecClaro = Colors.black45;
+final Color darkBackground = Color(0xFF1E1E1E);
+final Color lightBackground = Colors.white;
+final Color darkCard = Color(0xFF000000);
+final Color lightCard = Color(0xFFF7F7F7);
+final Color lightText = Color(0xFFFEF6EE);
+final Color darkText = Colors.black87;
+final Color secondaryText = Color(0xFFB3B3B3);
+final Color secondaryTextLight = Colors.black45;
 final Color primaryColor = Color(0xFFF67D2C);
 final Color secondaryColor = Color(0xFF007299);
 final Color successColor = Color(0xFF3C8B41);
 final Color errorColor = Color(0xFFFF5F57);
 final Color outlineColor = Color(0xFFCCCCCC);
 
-final ThemeData temaEscuro = ThemeData(
+final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
-  scaffoldBackgroundColor: fundoEscuro,
+  scaffoldBackgroundColor: darkBackground,
   colorScheme: const ColorScheme.dark(
     primary: Color(0xFFF67D2C),
     secondary: Color(0xFF007299),
@@ -32,8 +32,8 @@ final ThemeData temaEscuro = ThemeData(
   ),
   textTheme: GoogleFonts.interTextTheme(
     ThemeData.dark().textTheme.apply(
-          bodyColor: textoClaro,
-          displayColor: textoClaro,
+          bodyColor: lightText,
+          displayColor: lightText,
         ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -52,8 +52,8 @@ final ThemeData temaEscuro = ThemeData(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: primaryColor, width: 1.5),
     ),
-    hintStyle: TextStyle(color: textoClaro.withOpacity(0.6)),
-    labelStyle: GoogleFonts.inter(color: textoClaro.withOpacity(0.8)),
+    hintStyle: TextStyle(color: lightText.withOpacity(0.6)),
+    labelStyle: GoogleFonts.inter(color: lightText.withOpacity(0.8)),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -66,8 +66,8 @@ final ThemeData temaEscuro = ThemeData(
       padding: const EdgeInsets.symmetric(vertical: 14),
     ),
   ),
-  cardColor: cartaEscura,
-  iconTheme: IconThemeData(color: textoClaro),
+  cardColor: darkCard,
+  iconTheme: IconThemeData(color: lightText),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color(0xFF000000),
     foregroundColor: Colors.white,
@@ -76,10 +76,10 @@ final ThemeData temaEscuro = ThemeData(
   ),
 );
 
-final ThemeData temaClaro = ThemeData(
+final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
-  scaffoldBackgroundColor: fundoClaro,
+  scaffoldBackgroundColor: lightBackground,
   colorScheme: const ColorScheme.light(
     primary: Color(0xFFF67D2C),
     secondary: Color(0xFF007299),
@@ -93,8 +93,8 @@ final ThemeData temaClaro = ThemeData(
   ),
   textTheme: GoogleFonts.interTextTheme(
     ThemeData.light().textTheme.apply(
-          bodyColor: textoEscuro,
-          displayColor: textoEscuro,
+          bodyColor: darkText,
+          displayColor: darkText,
         ),
   ),
   inputDecorationTheme: InputDecorationTheme(
@@ -113,8 +113,8 @@ final ThemeData temaClaro = ThemeData(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: primaryColor, width: 1.5),
     ),
-    hintStyle: TextStyle(color: textoSecClaro),
-    labelStyle: GoogleFonts.inter(color: textoEscuro.withOpacity(0.8)),
+    hintStyle: TextStyle(color: secondaryTextLight),
+    labelStyle: GoogleFonts.inter(color: darkText.withOpacity(0.8)),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
@@ -127,8 +127,8 @@ final ThemeData temaClaro = ThemeData(
       padding: const EdgeInsets.symmetric(vertical: 14),
     ),
   ),
-  cardColor: cartaClara,
-  iconTheme: IconThemeData(color: textoEscuro),
+  cardColor: lightCard,
+  iconTheme: IconThemeData(color: darkText),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.transparent,
     foregroundColor: Colors.black,

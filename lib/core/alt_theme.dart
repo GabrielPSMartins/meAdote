@@ -1,38 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-final Color fundoEscuro = Color(0xFF121212);
-final Color carta = Color(0xFF1E1E1E);
-final Color cinzaBotao = Color(0xFFA0A0A0);
-final Color textoClaro = Colors.white;
-final Color textoSec = Color(0xFFB3B3B3);
+final Color darkBackground = Color(0xFF121212);
+final Color cardColor = Color(0xFF1E1E1E);
+final Color buttonGray = Color(0xFFA0A0A0);
+final Color lightText = Colors.white;
+final Color secondaryText = Color(0xFFB3B3B3);
 
-final ThemeData temaEscuro = ThemeData.dark().copyWith(
-  scaffoldBackgroundColor: fundoEscuro,
+final ThemeData darkTheme = ThemeData.dark().copyWith(
+  scaffoldBackgroundColor: darkBackground,
   textTheme: GoogleFonts.poppinsTextTheme(
-    ThemeData.dark().textTheme.apply(bodyColor: textoClaro, displayColor: textoClaro),
+    ThemeData.dark().textTheme.apply(bodyColor: lightText, displayColor: lightText),
   ),
   inputDecorationTheme: InputDecorationTheme(
     filled: true,
-    fillColor: carta,
+    fillColor: cardColor,
     contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-    hintStyle: TextStyle(color: textoSec),
+    hintStyle: TextStyle(color: secondaryText),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: cinzaBotao,
+      backgroundColor: buttonGray,
       foregroundColor: Colors.black,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       padding: EdgeInsets.symmetric(vertical: 14),
     ),
   ),
-  cardColor: carta,
-  iconTheme: IconThemeData(color: textoClaro),
+  cardColor: cardColor,
+  iconTheme: IconThemeData(color: lightText),
   appBarTheme: AppBarTheme(backgroundColor: Colors.transparent, elevation: 0, centerTitle: true),
 );
 
-final ThemeData temaClaro = ThemeData.light().copyWith(
+final ThemeData lightTheme = ThemeData.light().copyWith(
   scaffoldBackgroundColor: Colors.white,
   textTheme: GoogleFonts.poppinsTextTheme(
     ThemeData.light().textTheme.apply(bodyColor: Colors.black87, displayColor: Colors.black87),
@@ -46,7 +46,7 @@ final ThemeData temaClaro = ThemeData.light().copyWith(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: cinzaBotao,
+      backgroundColor: buttonGray,
       foregroundColor: Colors.black,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       padding: EdgeInsets.symmetric(vertical: 14),
