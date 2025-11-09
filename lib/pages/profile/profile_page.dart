@@ -7,13 +7,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Perfil'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        centerTitle: true,
-      ),
-      body: SafeArea(
+      return SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -108,12 +102,10 @@ class ProfilePage extends StatelessWidget {
                       leading: const Icon(Icons.exit_to_app),
                       title: const Text('Sair'),
                       onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginPage(),
-                          ),
-                        );
+                       Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
                       },
                     ),
                   ],
@@ -122,7 +114,6 @@ class ProfilePage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }

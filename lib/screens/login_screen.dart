@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meadote_inicio/app_container.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/primary_button.dart';
 
@@ -47,7 +48,10 @@ class LoginScreen extends StatelessWidget {
               PrimaryButton(
                 label: 'Entrar',
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, '/profile');
+                  Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AppContainer()),
+                );
                 },
               ),
               const SizedBox(height: 12),
