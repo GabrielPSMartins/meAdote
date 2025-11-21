@@ -21,3 +21,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/meadote/logo/
+    - assets/meadote/animais/
+    - assets/meadote/campanhas/
+    - assets/meadote/educacao/
+    - assets/meadote/fundo/
+    - assets/meadote/links/
+    - assets/meadote/ongs/
+    - assets/meadote/postagens/
