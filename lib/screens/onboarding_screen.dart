@@ -17,6 +17,7 @@ class OnboardingScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
+              // LOGO
               SizedBox(
                 height: 140,
                 child: Image.asset(
@@ -27,6 +28,7 @@ class OnboardingScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              // TÍTULO
               const Text(
                 "MeAdote",
                 style: TextStyle(
@@ -49,7 +51,7 @@ class OnboardingScreen extends StatelessWidget {
 
               const SizedBox(height: 26),
 
-              // ---- 3 Cards ----
+              // ---- 3 CARDS ----
               const OnboardingInfoCard(
                 icon: Icons.search,
                 title: "Encontre seu companheiro",
@@ -70,14 +72,15 @@ class OnboardingScreen extends StatelessWidget {
 
               const SizedBox(height: 22),
 
+              // BOTÃO COMEÇAR
               PrimaryButton(
                 label: "Começar Jornada",
                 onTap: () => Navigator.pushNamed(context, '/register'),
-
               ),
 
               const SizedBox(height: 20),
 
+              // ÍCONES SOCIAIS
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
@@ -91,8 +94,9 @@ class OnboardingScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              // LOGIN 
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/login'),
+                onPressed: () => Navigator.pushNamed(context, '/login_page'),
                 child: const Text(
                   "Já tem uma conta? Fazer login",
                   style: TextStyle(
