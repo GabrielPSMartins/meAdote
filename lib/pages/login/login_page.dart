@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_text_field.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../widgets/custom_text_field.dart';
+import '../../app_container.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +17,29 @@ class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
 
+  Future<void> login() async {
+    String role = "adopter";
+
+    if (email.text.contains("ong")) {
+      role = "ong";
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('role', role);
+
+    if (role == "adopter") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const OngAppContainer()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,10 +50,8 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
           child: Column(
             children: [
-
               const SizedBox(height: 20),
 
-              /// ---- LOGO ----
               SizedBox(
                 height: 140,
                 child: Image.asset(
@@ -60,7 +84,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 28),
 
-              /// ---- EMAIL ----
               CustomTextField(
                 hint: "Email",
                 controller: email,
@@ -69,7 +92,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 14),
 
-              /// ---- SENHA ----
               CustomTextField(
                 hint: "Senha",
                 controller: password,
@@ -79,9 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     obscure ? Icons.visibility_off : Icons.visibility,
                     color: Colors.white54,
                   ),
-                  onPressed: () {
-                    setState(() => obscure = !obscure);
-                  },
+                  onPressed: () => setState(() => obscure = !obscure),
                 ),
               ),
 
@@ -100,7 +120,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 20),
 
-              /// ---- BOTÃO LOGIN ----
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -111,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: login,
                   child: const Text(
                     "Entrar",
                     style: TextStyle(
@@ -125,7 +144,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 20),
 
-              /// ---- OPÇÃO ONG / PROTETOR ----
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFB89278)),

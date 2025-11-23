@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// Controlador de tema
+// Theme Controller
 import 'core/theme_controller.dart';
 
-// Tema real do app
+// Theme
 import 'theme/app_theme.dart';
 
-// Container principal 
+// Containers
 import 'app_container.dart';
 
-// Fluxo inicial
+// Flow
 import 'screens/onboarding_screen.dart';
 import 'pages/login/login_page.dart';
 import 'screens/register_screen.dart';
 import 'screens/register_organization_screen.dart';
 
-// Paginas internas
+// Internal pages
 import 'pages/profile/profile_page.dart';
+import 'pages/profile/user_requests_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/home/interest_page.dart';
 import 'pages/home/create_post_page.dart';
-
 
 void main() {
   runApp(const MeAdoteApp());
@@ -29,32 +30,50 @@ void main() {
 class MeAdoteApp extends StatelessWidget {
   const MeAdoteApp({super.key});
 
+  Future<Widget> _startup() async {
+    final prefs = await SharedPreferences.getInstance();
+    final role = prefs.getString('role');
+
+    if (role == 'adopter') {
+      return const AdopterAppContainer();
+    } else if (role == 'ong') {
+      return const OngAppContainer();
+    }
+
+    return const OnboardingScreen();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: themeController,
       builder: (_, mode, __) {
-        return MaterialApp(
-          title: 'MeAdote',
-          debugShowCheckedModeBanner: false,
+        return FutureBuilder(
+          future: _startup(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return MaterialApp(home: Container(color: Colors.black));
+            }
 
-          darkTheme: AppTheme.darkTheme(),
-          themeMode: mode,
+            return MaterialApp(
+              title: 'MeAdote',
+              debugShowCheckedModeBanner: false,
+              darkTheme: AppTheme.darkTheme(),
+              themeMode: mode,
 
-          initialRoute: '/',
-          routes: {
-            '/': (_) => const OnboardingScreen(),
-            '/login': (_) => const LoginPage(),
-            '/register': (_) => const RegisterScreen(),
-            '/register_org': (_) => const RegisterOrganizationScreen(),
+              home: snapshot.data!,
 
-            // entrada no app
-            '/home': (_) => const AppContainer(),
+              routes: {
+                '/login': (_) => const LoginPage(),
+                '/register': (_) => const RegisterScreen(),
+                '/register_org': (_) => const RegisterOrganizationScreen(),
 
-            // internas
-            '/profile': (_) => const ProfilePage(),
-            '/interest': (_) => const InterestPage(),
-            '/create_post': (_) => const CreatePostPage(),
+                '/profile': (_) => const ProfilePage(),
+                '/interest': (_) => const InterestPage(),
+                '/create_post': (_) => const CreatePostPage(),
+                '/user_requests': (_) => const UserRequestsPage(),
+              },
+            );
           },
         );
       },

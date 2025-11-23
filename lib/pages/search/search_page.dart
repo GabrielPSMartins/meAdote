@@ -2,29 +2,40 @@ import 'package:flutter/material.dart';
 import '../../models/animal.dart';
 import '../details_animal/details_animal_page.dart';
 
-class BuscarPage extends StatelessWidget {
+class SearchPage extends StatelessWidget {
+  const SearchPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            Text('Buscar Animais',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            TextField(decoration: InputDecoration(hintText: 'Buscar')),
-            SizedBox(height: 8),
+            const Text(
+              'Search Animals',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            
+            const TextField(
+              decoration: InputDecoration(hintText: 'Search'),
+            ),
+
+            const SizedBox(height: 8),
+
             Wrap(
               spacing: 8,
-              children: [
-                Chip(label: Text('Todos')),
-                Chip(label: Text('Cachorros')),
-                Chip(label: Text('Gatos')),
-                Chip(label: Text('Precisam Ajuda')),
+              children: const [
+                Chip(label: Text('All')),
+                Chip(label: Text('Dogs')),
+                Chip(label: Text('Cats')),
+                Chip(label: Text('Needing Help')),
               ],
             ),
-            SizedBox(height: 12),
+
+            const SizedBox(height: 12),
+
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,
@@ -45,7 +56,7 @@ class BuscarPage extends StatelessWidget {
                           color: Theme.of(context).cardColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           children: [
                             Container(
@@ -59,11 +70,13 @@ class BuscarPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Text(a.name,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Text('${a.species} | ${a.breed}',
-                                style: TextStyle(color: Color(0xFFB3B3B3))),
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
+                            Text(
+                              '${a.species} | ${a.breed}',
+                              style: const TextStyle(color: Color(0xFFB3B3B3)),
+                            ),
                           ],
                         ),
                       ),
