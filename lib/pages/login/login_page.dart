@@ -18,27 +18,47 @@ class _LoginPageState extends State<LoginPage> {
   final password = TextEditingController();
 
   Future<void> login() async {
-    String role = "adopter";
+  final prefs = await SharedPreferences.getInstance();
 
-    if (email.text.contains("ong")) {
-      role = "ong";
-    }
+  final savedEmail = prefs.getString('email') ?? '';
+  final savedPassword = prefs.getString('senha') ?? '';
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('role', role);
-
-    if (role == "adopter") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
-      );
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const OngAppContainer()),
-      );
-    }
+  // --- VALIDAÇÃO ---
+  if (email.text.trim() != savedEmail || password.text.trim() != savedPassword) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text("Email ou senha incorretos."),
+        backgroundColor: Colors.redAccent,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+    return;
   }
+
+  String role = "adopter";
+  if (email.text.contains("ong")) {
+    role = "ong";
+  }
+
+  await prefs.setString('role', role);
+
+  if (role == "adopter") {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
+    );
+  } else {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const OngAppContainer()),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {

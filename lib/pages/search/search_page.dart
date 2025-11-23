@@ -13,7 +13,7 @@ class SearchPage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'Search Animals',
+              'Procurar Animais',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -27,10 +27,10 @@ class SearchPage extends StatelessWidget {
             Wrap(
               spacing: 8,
               children: const [
-                Chip(label: Text('All')),
-                Chip(label: Text('Dogs')),
-                Chip(label: Text('Cats')),
-                Chip(label: Text('Needing Help')),
+                Chip(label: Text('Todos')),
+                Chip(label: Text('Cães')),
+                Chip(label: Text('Gatos')),
+                Chip(label: Text('Ajuda')),
               ],
             ),
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';   
 
 import '../../models/user.dart';
 import '../../models/animal.dart';
@@ -38,12 +39,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadMockData() async {
+    final prefs = await SharedPreferences.getInstance();
     user = User(
-      id: 1,
-      name: "João Silva",
-      email: "joao.silva@email.com",
-      password: "123456",
-    );
+    id: 1,
+    name: prefs.getString('nome') ?? 'Usuário',
+    email: prefs.getString('email') ?? 'email@exemplo.com',
+    password: prefs.getString('senha') ?? '',
+  );
 
     favorites = [
       Favorite(id: "1", userId: "1", animalId: "10"),
@@ -231,6 +233,16 @@ class _ProfilePageState extends State<ProfilePage> {
             onPressed: () {},
             icon: const Icon(Icons.edit, color: Colors.white),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/login',
+                (route) => false,
+              );
+  },
+  icon: const Icon(Icons.logout, color: Colors.white),
+),
         ],
       ),
     );

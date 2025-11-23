@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -63,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   // ------------------ VALIDAÇÃO ------------------
-  void _validateAndSubmit() {
+  Future<void> _validateAndSubmit() async {
     if (nome.text.trim().isEmpty) return _showError("Preencha o nome completo.");
     if (email.text.isEmpty || !email.text.contains("@")) {
       return _showError("Digite um email válido.");
@@ -81,6 +82,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!acceptedTerms) {
       return _showError("Você precisa aceitar os termos.");
     }
+    
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('nome', nome.text.trim());
+    await prefs.setString('email', email.text.trim());
+    await prefs.setString('senha', senha.text.trim());
 
     _showSuccess("Conta criada com sucesso!");
 
