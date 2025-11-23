@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// Controlador de tema correto (usado no ProfilePage)
+// Theme Controller
 import 'core/theme_controller.dart';
 
-// Tema REAL do seu projeto (somente darkTheme())
+// Theme
 import 'theme/app_theme.dart';
 
-// Container principal do app (menu inferior)
+// Containers
 import 'app_container.dart';
 
-// Fluxo inicial
+// Flow
 import 'screens/onboarding_screen.dart';
-import 'screens/login_screen.dart';
+import 'pages/login/login_page.dart';
 import 'screens/register_screen.dart';
 import 'screens/register_organization_screen.dart';
 
-// Páginas internas
+// Internal pages
 import 'pages/profile/profile_page.dart';
+import 'pages/profile/user_requests_page.dart';
+import 'pages/home/home_page.dart';
+import 'pages/home/interest_page.dart';
+import 'pages/home/create_post_page.dart';
 
 void main() {
   runApp(const MeAdoteApp());
@@ -25,34 +30,50 @@ void main() {
 class MeAdoteApp extends StatelessWidget {
   const MeAdoteApp({super.key});
 
+  Future<Widget> _startup() async {
+    final prefs = await SharedPreferences.getInstance();
+    final role = prefs.getString('role');
+
+    if (role == 'adopter') {
+      return const AdopterAppContainer();
+    } else if (role == 'ong') {
+      return const OngAppContainer();
+    }
+
+    return const OnboardingScreen();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeController, // CORRETAMENTE USADO
+    return ValueListenableBuilder(
+      valueListenable: themeController,
       builder: (_, mode, __) {
-        return MaterialApp(
-          title: 'MeAdote',
-          debugShowCheckedModeBanner: false,
+        return FutureBuilder(
+          future: _startup(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return MaterialApp(home: Container(color: Colors.black));
+            }
 
-          // Você só tem darkTheme()
-          darkTheme: AppTheme.darkTheme(),
-          themeMode: mode,
+            return MaterialApp(
+              title: 'MeAdote',
+              debugShowCheckedModeBanner: false,
+              darkTheme: AppTheme.darkTheme(),
+              themeMode: mode,
 
-          // Rota inicial
-          initialRoute: '/',
+              home: snapshot.data!,
 
-          routes: {
-            '/': (context) => const OnboardingScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/register': (context) => const RegisterScreen(),
-            '/register_org': (context) =>
-                const RegisterOrganizationScreen(),
+              routes: {
+                '/login': (_) => const LoginPage(),
+                '/register': (_) => const RegisterScreen(),
+                '/register_org': (_) => const RegisterOrganizationScreen(),
 
-            // Entrada no app
-            '/home': (context) => const AppContainer(),
-
-            // Página interna
-            '/profile': (context) => const ProfilePage(),
+                '/profile': (_) => const ProfilePage(),
+                '/interest': (_) => const InterestPage(),
+                '/create_post': (_) => const CreatePostPage(),
+                '/user_requests': (_) => const UserRequestsPage(),
+              },
+            );
           },
         );
       },

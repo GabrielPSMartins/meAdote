@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/onboarding_info_card.dart';
 import '../widgets/primary_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -6,112 +7,107 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: const Color(0xFF1F1A17),
+
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  height: size.height * 0.3,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.network(
-                          'https://cdn.pixabay.com/photo/2017/09/25/13/12/dogs-2785074_1280.jpg',
-                          fit: BoxFit.cover,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.3),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+
+              // LOGO
+              SizedBox(
+                height: 140,
+                child: Image.asset(
+                  'assets/meadote/logo/Logo1.png',
+                  fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 32),
-                Text(
-                  'MeAdote',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.bold, fontSize: 28),
+              ),
+
+              const SizedBox(height: 20),
+
+              // TÍTULO
+              const Text(
+                "MeAdote",
+                style: TextStyle(
+                  color: Color(0xFFEFE3DB),
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
                 ),
-                const SizedBox(height: 12),
-                Text(
-                  'Conectando pessoas e animais em busca de um novo lar.\n'
-                  'Descubra histórias, adote e transforme vidas.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(height: 1.4),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Adoção responsável, laços eternos.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFFAD9F94),
+                  fontSize: 14,
                 ),
-                const SizedBox(height: 36),
-                PrimaryButton(
-                  label: 'Começar Jornada',
-                  onTap: () => Navigator.pushNamed(context, '/register'),
-                ),
-                const SizedBox(height: 12),
-                PrimaryButton(
-                  label: 'Cadastrar Organização',
-                  onTap: () => Navigator.pushNamed(context, '/register_org'),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    3,
-                    (i) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                      child: CircleAvatar(
-                        radius: 5,
-                        backgroundColor: i == 0
-                            ? Theme.of(context).colorScheme.primary
-                            : Colors.grey.shade400,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => Navigator.pushNamed(context, '/login'),
-                  child: Text(
-                    'Já tem uma conta? Fazer login',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
+              ),
+
+              const SizedBox(height: 26),
+
+              // ---- 3 CARDS ----
+              const OnboardingInfoCard(
+                icon: Icons.search,
+                title: "Encontre seu companheiro",
+                subtitle: "Explore animais disponíveis perto de você.",
+              ),
+
+              const OnboardingInfoCard(
+                icon: Icons.verified_user,
+                title: "Adoção segura",
+                subtitle: "ONGs e protetores verificados.",
+              ),
+
+              const OnboardingInfoCard(
+                icon: Icons.volunteer_activism,
+                title: "Suporte completo",
+                subtitle: "Acompanhamento pós-adoção garantido.",
+              ),
+
+              const SizedBox(height: 22),
+
+              // BOTÃO COMEÇAR
+              PrimaryButton(
+                label: "Começar Jornada",
+                onTap: () => Navigator.pushNamed(context, '/register'),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ÍCONES SOCIAIS
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.facebook, color: Colors.white70, size: 30),
+                  SizedBox(width: 25),
+                  Icon(Icons.g_mobiledata, color: Colors.white70, size: 35),
+                  SizedBox(width: 25),
+                  Icon(Icons.apple, color: Colors.white70, size: 30),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+
+              // LOGIN 
+              TextButton(
+                onPressed: () => Navigator.pushNamed(context, '/login_page'),
+                child: const Text(
+                  "Já tem uma conta? Fazer login",
+                  style: TextStyle(
+                    color: Color(0xFFB89278),
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              const SizedBox(height: 20),
+            ],
           ),
         ),
       ),

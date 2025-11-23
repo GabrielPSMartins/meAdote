@@ -25,6 +25,7 @@ class DatabaseProvider {
   }
 
   Future _createDB(Database db, int version) async {
+    // ---- TABELA USERS ----
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,6 +35,7 @@ class DatabaseProvider {
       );
     ''');
 
+    // ---- TABELA ANIMALS ----
     await db.execute('''
       CREATE TABLE animals(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +44,24 @@ class DatabaseProvider {
         type TEXT,
         description TEXT,
         image TEXT
+      );
+    ''');
+
+    // ---- TABELA POSTS ----
+    await db.execute('''
+      CREATE TABLE posts(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userName TEXT,
+        userAvatar TEXT,
+        title TEXT NOT NULL,
+        description TEXT,
+        type TEXT,
+        species TEXT,
+        size TEXT,
+        city TEXT,
+        state TEXT,
+        createdAt TEXT,
+        images TEXT
       );
     ''');
   }

@@ -1,73 +1,176 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../widgets/custom_text_field.dart';
+import '../../app_container.dart';
 
-class LoginPage extends StatelessWidget {
-  final TextEditingController email = TextEditingController();
-  final TextEditingController password = TextEditingController();
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
-  LoginPage({super.key});
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool obscure = true;
+
+  final email = TextEditingController();
+  final password = TextEditingController();
+
+  Future<void> login() async {
+    String role = "adopter";
+
+    if (email.text.contains("ong")) {
+      role = "ong";
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('role', role);
+
+    if (role == "adopter") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const OngAppContainer()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      backgroundColor: const Color(0xFF1F1A17),
+
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
           child: Column(
             children: [
               const SizedBox(height: 20),
-              const CircleAvatar(radius: 44, backgroundColor: Color(0xFF3A3A3A)),
-              const SizedBox(height: 12),
-              const Text(
-                'Bem vindo ao MeAdote',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+
+              SizedBox(
+                height: 140,
+                child: Image.asset(
+                  'assets/meadote/logo/Logo1.png',
+                  fit: BoxFit.contain,
+                ),
               ),
-              const SizedBox(height: 8),
+
+              const SizedBox(height: 20),
+
               const Text(
-                'Acesse sua conta para continuar',
+                "Bem-vindo ao MeAdote",
+                style: TextStyle(
+                  color: Color(0xFFEFE3DB),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              const Text(
+                "Acolha vidas, transforme histórias.",
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Color(0xFFB3B3B3)),
+                style: TextStyle(
+                  color: Color(0xFFAD9F94),
+                  fontSize: 14,
+                ),
               ),
-              const SizedBox(height: 12),
+
+              const SizedBox(height: 28),
+
               CustomTextField(
-                hint: 'Email',
+                hint: "Email",
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
               ),
-              const SizedBox(height: 8),
+
+              const SizedBox(height: 14),
+
               CustomTextField(
-                hint: 'Senha',
+                hint: "Senha",
                 controller: password,
-                obscure: true,
+                obscure: obscure,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    obscure ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white54,
+                  ),
+                  onPressed: () => setState(() => obscure = !obscure),
+                ),
               ),
+
               const SizedBox(height: 8),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {},
-                  child: const Text('Esqueceu a senha?'),
+                  child: const Text(
+                    "Esqueceu a senha?",
+                    style: TextStyle(color: Color(0xFFB89278)),
+                  ),
                 ),
               ),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 48),
-                  backgroundColor: Theme.of(context)
-                          .elevatedButtonTheme
-                          .style
-                          ?.backgroundColor
-                          ?.resolve({}) ??
-                      const Color(0xFFA0A0A0),
-                  foregroundColor: Colors.black,
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB89278),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: login,
+                  child: const Text(
+                    "Entrar",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
-                child: const Text('Entrar'),
               ),
-              const SizedBox(height: 8),
+
+              const SizedBox(height: 20),
+
               OutlinedButton(
-                onPressed: () {},
-                child: const Text('Criar conta'),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: Color(0xFFB89278)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(22),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                ),
+                onPressed: () => Navigator.pushNamed(context, "/register_org"),
+                child: const Text(
+                  "ONG / Protetor - Criar uma conta",
+                  style: TextStyle(color: Color(0xFFB89278)),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              TextButton(
+                onPressed: () => Navigator.pushNamed(context, "/register"),
+                child: const Text(
+                  "Criar uma conta",
+                  style: TextStyle(
+                    color: Color(0xFFEFE3DB),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ],
           ),
