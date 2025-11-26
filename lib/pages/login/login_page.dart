@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_text_field.dart';
+
+// Repositórios
+import '../../repositories/user_repository.dart';
+import '../../repositories/ong_repository.dart';
+
+// Containers
 import '../../app_container.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,16 +24,55 @@ class _LoginPageState extends State<LoginPage> {
   final password = TextEditingController();
 
   Future<void> login() async {
-  final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    final emailStr = email.text.trim();
+    final passwordStr = password.text.trim();
 
-  final savedEmail = prefs.getString('email') ?? '';
-  final savedPassword = prefs.getString('senha') ?? '';
+    if (emailStr.isEmpty || passwordStr.isEmpty) {
+      _errorMessage("Preencha todos os campos");
+      return;
+    }
 
-  // --- VALIDAÇÃO ---
-  if (email.text.trim() != savedEmail || password.text.trim() != savedPassword) {
+    // -------------------------------
+    // TENTAR LOGIN COMO ONG
+    // -------------------------------
+    final ong = await OngRepository().login(emailStr, passwordStr);
+    if (ong != null) {
+      await prefs.setString('role', 'ong');
+      await prefs.setString('email', ong.email);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const OngAppContainer()),
+      );
+      return;
+    }
+
+    // -------------------------------
+    // TENTAR LOGIN COMO ADOTANTE
+    // -------------------------------
+    final user = await UserRepository().login(emailStr, passwordStr);
+    if (user != null) {
+      await prefs.setString('role', 'adopter');
+      await prefs.setString('email', user.email);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
+      );
+      return;
+    }
+
+    // -------------------------------
+    // NENHUM LOGIN FUNCIONOU
+    // -------------------------------
+    _errorMessage("Email ou senha incorretos.");
+  }
+
+  void _errorMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text("Email ou senha incorretos."),
+        content: Text(msg),
         backgroundColor: Colors.redAccent,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
@@ -36,35 +81,12 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-    return;
   }
-
-  String role = "adopter";
-  if (email.text.contains("ong")) {
-    role = "ong";
-  }
-
-  await prefs.setString('role', role);
-
-  if (role == "adopter") {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
-    );
-  } else {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const OngAppContainer()),
-    );
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1F1A17),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
@@ -72,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 20),
 
+              // Logo
               SizedBox(
                 height: 140,
                 child: Image.asset(

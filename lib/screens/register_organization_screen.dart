@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../models/ong.dart';
+import '../../repositories/ong_repository.dart';
+
 class RegisterOrganizationScreen extends StatefulWidget {
   const RegisterOrganizationScreen({super.key});
 
@@ -64,8 +67,9 @@ class _RegisterOrganizationScreenState
     );
   }
 
-  // ------------------ VALIDAÇÃO ------------------
-  void _validateAndSubmit() {
+  // ------------------ SALVAR ORGANIZAÇÃO NO BANCO ------------------
+  Future<void> _validateAndSubmit() async {
+    // --- VALIDAÇÕES ---
     if (orgNome.text.trim().isEmpty) return _showError("Preencha o nome da organização.");
     if (orgCnpj.text.trim().isEmpty) return _showError("Informe o CNPJ.");
     if (_selectedType == null) return _showError("Selecione o tipo da organização.");
@@ -85,8 +89,22 @@ class _RegisterOrganizationScreenState
       return _showError("Você precisa aceitar os termos.");
     }
 
+    // ------------------ CRIAR OBJETO ONG ------------------
+    final ong = Ong(
+      name: orgNome.text.trim(),
+      email: respEmail.text.trim(),
+      password: respSenha.text.trim(),
+      city: orgEndereco.text.trim(),
+      imageUrl: "", // futuramente você pode salvar foto
+    );
+
+    // ------------------ SALVAR NO BANCO SQLITE ------------------
+    final repo = OngRepository();
+    await repo.createOng(ong);
+
     _showSuccess("Organização cadastrada com sucesso!");
 
+    // REDIRECIONAR PARA LOGIN
     Future.delayed(const Duration(milliseconds: 900), () {
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     });
