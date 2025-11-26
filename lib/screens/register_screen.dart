@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../repositories/user_repository.dart'; 
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -63,30 +63,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // ------------------ VALIDAÇÃO ------------------
+  // ------------------ VALIDAÇÃO + SALVAR NO DB ------------------
   Future<void> _validateAndSubmit() async {
     if (nome.text.trim().isEmpty) return _showError("Preencha o nome completo.");
     if (email.text.isEmpty || !email.text.contains("@")) {
       return _showError("Digite um email válido.");
     }
     if (telefone.text.length < 8) return _showError("Telefone inválido.");
+    if (senha.text.length < 6) return _showError("A senha deve ter pelo menos 6 caracteres.");
+    if (senha.text != confirmarSenha.text) return _showError("As senhas não coincidem.");
+    if (!acceptedTerms) return _showError("Você precisa aceitar os termos.");
 
-    if (senha.text.length < 6) {
-      return _showError("A senha deve ter pelo menos 6 caracteres.");
-    }
+    final repo = UserRepository();
 
-    if (senha.text != confirmarSenha.text) {
-      return _showError("As senhas não coincidem.");
-    }
+    final ok = await repo.register(
+      nome.text.trim(),
+      email.text.trim(),
+      senha.text.trim(),
+    );
 
-    if (!acceptedTerms) {
-      return _showError("Você precisa aceitar os termos.");
+    if (!ok) {
+      return _showError("Email já cadastrado.");
     }
-    
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('nome', nome.text.trim());
-    await prefs.setString('email', email.text.trim());
-    await prefs.setString('senha', senha.text.trim());
 
     _showSuccess("Conta criada com sucesso!");
 
@@ -190,15 +188,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/register_org',
-                      );
+                      Navigator.pushReplacementNamed(context, '/register_org');
                     },
                     child: Container(
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF3A3A3A),
+                        color: Color(0xFF3A3A3A),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.white24),
                       ),
@@ -218,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
             const SizedBox(height: 20),
 
-            // --------- CARD DO FORM ---------
+            // --------- FORM CARD ---------
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -252,15 +247,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   _gap(),
                   _input("Senha *", Icons.lock, senha, "Crie uma senha segura", obscure: true),
                   _gap(),
-                  _input("Confirmar Senha *", Icons.lock, confirmarSenha, "Repita a senha",
-                      obscure: true),
+                  _input(
+                    "Confirmar Senha *",
+                    Icons.lock,
+                    confirmarSenha,
+                    "Repita a senha",
+                    obscure: true,
+                  ),
                 ],
               ),
             ),
 
             const SizedBox(height: 15),
 
-            // --------- TERMOS ---------
+            // -------- TERMO DE USO --------
             Row(
               children: [
                 Checkbox(
@@ -270,11 +270,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   activeColor: primary,
                 ),
                 Expanded(
-                  child: Text.rich(
-                    TextSpan(
-                      text: "Aceito os termos e condições.\n",
-                      style: const TextStyle(fontSize: 13, color: Colors.white70),
-                    ),
+                  child: Text(
+                    "Aceito os termos e condições.",
+                    style: TextStyle(fontSize: 13, color: Colors.white70),
                   ),
                 ),
               ],
