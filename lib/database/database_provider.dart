@@ -19,8 +19,9 @@ class DatabaseProvider {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _createDB,
+      onUpgrade: _upgradeDB,
     );
   }
 
@@ -64,6 +65,35 @@ class DatabaseProvider {
         images TEXT
       );
     ''');
+
+    // ---- TABELA ONG ----
+    await db.execute('''
+      CREATE TABLE ong(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        city TEXT NOT NULL,
+        imageUrl TEXT
+      );
+    ''');
+  }
+
+
+  Future _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Criar tabela ONG
+      await db.execute('''
+        CREATE TABLE ong(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          email TEXT NOT NULL UNIQUE,
+          password TEXT NOT NULL,
+          city TEXT NOT NULL,
+          imageUrl TEXT
+        );
+      ''');
+    }
   }
 
   Future close() async {

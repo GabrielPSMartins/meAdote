@@ -23,6 +23,11 @@ import 'pages/home/home_page.dart';
 import 'pages/home/interest_page.dart';
 import 'pages/home/create_post_page.dart';
 
+import 'pages/ong/ong_home_page.dart';
+import 'pages/ong/ong_profile_page.dart';
+import 'pages/ong/ong_campaigns_page.dart';
+import 'pages/ong/ong_create_campaign_page.dart';
+
 void main() {
   runApp(const MeAdoteApp());
 }
@@ -72,6 +77,11 @@ class MeAdoteApp extends StatelessWidget {
                 '/interest': (_) => const InterestPage(),
                 '/create_post': (_) => const CreatePostPage(),
                 '/user_requests': (_) => const UserRequestsPage(),
+
+                '/ong_home': (_) => const OngHomePage(),
+                '/ong_profile': (_) => const OngProfilePage(),
+                '/ong_campaigns': (_) => const OngCampaignsPage(),
+                '/ong_create_campaign': (_) => const OngCreateCampaignPage(),
               },
             );
           },
