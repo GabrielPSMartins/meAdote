@@ -1,31 +1,53 @@
-import 'package:sqflite/sqflite.dart';  // <-- importante
-import '../database/user_dao.dart';
+import 'package:sqflite/sqflite.dart';
+import '../database/database_provider.dart';
 import '../models/user.dart';
 
 class UserRepository {
-  final _dao = UserDAO();
-
-  Future<User?> login(String email, String password) {
-    return _dao.login(email, password);
-  }
-
   Future<bool> register(String name, String email, String password) async {
+    final db = await DatabaseProvider.instance.database;
+
     try {
-      await _dao.insert(
-        User(
-          name: name,
-          email: email,
-          password: password,
-        ),
+      await db.insert(
+        "users",
+        {
+          "name": name,
+          "email": email,
+          "password": password,
+        },
+        conflictAlgorithm: ConflictAlgorithm.fail,
       );
       return true;
-    } on DatabaseException catch (e) {
-      if (e.isUniqueConstraintError()) {
-        return false;
-      } else {
-        print('Erro no banco ao registrar usuário: $e');
-        rethrow;
-      }
+    } catch (e) {
+      return false;
     }
+  }
+
+  Future<User?> login(String email, String password) async {
+    final db = await DatabaseProvider.instance.database;
+
+    final result = await db.query(
+      "users",
+      where: "email = ? AND password = ?",
+      whereArgs: [email, password],
+    );
+
+    if (result.isEmpty) return null;
+
+    return User.fromMap(result.first);
+  }
+
+  Future<User?> getByEmail(String email) async {
+    final db = await DatabaseProvider.instance.database;
+
+    final result = await db.query(
+      "users",
+      where: "email = ?",
+      whereArgs: [email],
+      limit: 1,
+    );
+
+    if (result.isEmpty) return null;
+
+    return User.fromMap(result.first);
   }
 }

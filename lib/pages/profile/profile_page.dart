@@ -35,23 +35,29 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _loadMockData();
+    _loadUserData();
   }
 
-  Future<void> _loadMockData() async {
-    final prefs = await SharedPreferences.getInstance();
-    user = User(
-    id: 1,
-    name: prefs.getString('nome') ?? 'Usuário',
-    email: prefs.getString('email') ?? 'email@exemplo.com',
-    password: prefs.getString('senha') ?? '',
-  );
 
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('email');
+
+    if (savedEmail == null) {
+      setState(() {
+        loading = false;
+        user = User(id: 0, name: "Usuário", email: "email@exemplo.com", password: "");
+      });
+      return;
+    }
+
+    // Busca usuário real no banco
+    user = await userRepo.getByEmail(savedEmail);
+
+    // MOCKS continuam só para contadores
     favorites = [
       Favorite(id: "1", userId: "1", animalId: "10"),
       Favorite(id: "2", userId: "1", animalId: "11"),
-      Favorite(id: "3", userId: "1", animalId: "12"),
-      Favorite(id: "4", userId: "1", animalId: "13"),
     ];
 
     adoptionRequests = [
@@ -63,41 +69,18 @@ class _ProfilePageState extends State<ProfilePage> {
         status: "pending",
         requestedAt: DateTime.now(),
       ),
-      AdoptionRequest(
-        id: "2",
-        userId: "1",
-        animalId: "11",
-        organizationName: "Amigos dos Animais",
-        status: "approved",
-        requestedAt: DateTime.now(),
-      )
-    ];
-
-    helpedPets = [
-      Animal(
-        name: "Luna",
-        species: "Cachorro",
-        breed: "Vira-lata",
-        age: 2,
-        size: "Médio",
-        imageUrl: "https://place-puppy.com/200x200",
-      ),
-      Animal(
-        name: "Rex",
-        species: "Cachorro",
-        breed: "Pastor",
-        age: 3,
-        size: "Grande",
-        imageUrl: "https://place-puppy.com/200x201",
-      ),
     ];
 
     adoptedPets = [];
+    helpedPets = [];
 
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future.delayed(const Duration(milliseconds: 300));
 
-    setState(() => loading = false);
+    setState(() {
+      loading = false;
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {
