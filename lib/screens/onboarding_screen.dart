@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/onboarding_info_card.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/app_logo.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -17,14 +18,7 @@ class OnboardingScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
 
-              // LOGO
-              SizedBox(
-                height: 140,
-                child: Image.asset(
-                  'assets/meadote/logo/Logo1.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
+              const AppLogo(),
 
               const SizedBox(height: 20),
 
@@ -96,7 +90,7 @@ class OnboardingScreen extends StatelessWidget {
 
               // LOGIN 
               TextButton(
-                onPressed: () => Navigator.pushNamed(context, '/login_page'),
+                onPressed: () => Navigator.pushNamed(context, '/login'),
                 child: const Text(
                   "Já tem uma conta? Fazer login",
                   style: TextStyle(

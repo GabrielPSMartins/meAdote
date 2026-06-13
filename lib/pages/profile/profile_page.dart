@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';   
 
 import '../../models/user.dart';
 import '../../models/animal.dart';
@@ -10,6 +9,8 @@ import '../../repositories/user_repository.dart';
 import '../../repositories/favorite_repository.dart';
 import '../../repositories/adoption_request_repository.dart';
 import '../../repositories/pet_repository.dart';
+import '../../services/auth_service.dart';
+import '../../screens/onboarding_screen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -35,17 +36,28 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    _loadMockData();
+    _loadData();
   }
 
-  Future<void> _loadMockData() async {
-    final prefs = await SharedPreferences.getInstance();
-    user = User(
-    id: 1,
-    name: prefs.getString('nome') ?? 'Usuário',
-    email: prefs.getString('email') ?? 'email@exemplo.com',
-    password: prefs.getString('senha') ?? '',
-  );
+  Future<void> _loadData() async {
+    final userId = await AuthService.getUserId();
+    final name = await AuthService.getUserName();
+    final email = await AuthService.getUserEmail();
+    final city = await AuthService.getCity();
+    final state = await AuthService.getState();
+
+    if (userId != null) {
+      user = await userRepo.getById(userId);
+    }
+
+    user ??= User(
+      id: userId,
+      name: name,
+      email: email,
+      password: '',
+      city: city,
+      state: state,
+    );
 
     favorites = [
       Favorite(id: "1", userId: "1", animalId: "10"),
@@ -94,9 +106,26 @@ class _ProfilePageState extends State<ProfilePage> {
 
     adoptedPets = [];
 
-    await Future.delayed(const Duration(milliseconds: 400));
+    if (mounted) setState(() => loading = false);
+  }
 
-    setState(() => loading = false);
+  Future<void> _logout() async {
+    await AuthService.logout();
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+      (route) => false,
+    );
+  }
+
+  String get _locationLabel {
+    final city = user?.city;
+    final state = user?.state;
+    if (city != null && state != null) return '$city - $state';
+    if (city != null) return city;
+    if (state != null) return state;
+    return 'Localização não informada';
   }
 
   @override
@@ -220,9 +249,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Icon(Icons.location_on,
                         color: Colors.white70, size: 16),
                     const SizedBox(width: 4),
-                    const Text(
-                      "Itajubá - MG",
-                      style: TextStyle(color: Colors.white70),
+                    Text(
+                      _locationLabel,
+                      style: const TextStyle(color: Colors.white70),
                     ),
                   ],
                 ),
@@ -234,15 +263,9 @@ class _ProfilePageState extends State<ProfilePage> {
             icon: const Icon(Icons.edit, color: Colors.white),
           ),
           IconButton(
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                '/login',
-                (route) => false,
-              );
-  },
-  icon: const Icon(Icons.logout, color: Colors.white),
-),
+            onPressed: _logout,
+            icon: const Icon(Icons.logout, color: Colors.white),
+          ),
         ],
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/app_logo.dart';
 import '../../app_container.dart';
+import '../../repositories/user_repository.dart';
+import '../../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,75 +15,74 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool obscure = true;
+  bool loading = false;
 
   final email = TextEditingController();
   final password = TextEditingController();
+  final userRepo = UserRepository();
 
   Future<void> login() async {
-  final prefs = await SharedPreferences.getInstance();
+    if (email.text.trim().isEmpty || password.text.isEmpty) {
+      _showSnack('Preencha email e senha.', isError: true);
+      return;
+    }
 
-  final savedEmail = prefs.getString('email') ?? '';
-  final savedPassword = prefs.getString('senha') ?? '';
+    setState(() => loading = true);
 
-  // --- VALIDAÇÃO ---
-  if (email.text.trim() != savedEmail || password.text.trim() != savedPassword) {
+    try {
+      final user = await userRepo.login(
+        email.text.trim(),
+        password.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      if (user == null) {
+        _showSnack('Email ou senha incorretos.', isError: true);
+        return;
+      }
+
+      await AuthService.saveSession(user);
+
+      if (!mounted) return;
+
+      final container = user.role == 'ong'
+          ? const OngAppContainer()
+          : const AdopterAppContainer();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => container),
+      );
+    } finally {
+      if (mounted) setState(() => loading = false);
+    }
+  }
+
+  void _showSnack(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text("Email ou senha incorretos."),
-        backgroundColor: Colors.redAccent,
+        content: Text(msg),
+        backgroundColor: isError ? Colors.redAccent : Colors.green.shade600,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
-    return;
   }
-
-  String role = "adopter";
-  if (email.text.contains("ong")) {
-    role = "ong";
-  }
-
-  await prefs.setString('role', role);
-
-  if (role == "adopter") {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const AdopterAppContainer()),
-    );
-  } else {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const OngAppContainer()),
-    );
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF1F1A17),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
           child: Column(
             children: [
               const SizedBox(height: 20),
-
-              SizedBox(
-                height: 140,
-                child: Image.asset(
-                  'assets/meadote/logo/Logo1.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-
+              const AppLogo(),
               const SizedBox(height: 20),
-
               const Text(
                 "Bem-vindo ao MeAdote",
                 style: TextStyle(
@@ -90,9 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-
               const SizedBox(height: 6),
-
               const Text(
                 "Acolha vidas, transforme histórias.",
                 textAlign: TextAlign.center,
@@ -101,17 +100,13 @@ class _LoginPageState extends State<LoginPage> {
                   fontSize: 14,
                 ),
               ),
-
               const SizedBox(height: 28),
-
               CustomTextField(
                 hint: "Email",
                 controller: email,
                 keyboardType: TextInputType.emailAddress,
               ),
-
               const SizedBox(height: 14),
-
               CustomTextField(
                 hint: "Senha",
                 controller: password,
@@ -124,22 +119,20 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () => setState(() => obscure = !obscure),
                 ),
               ),
-
               const SizedBox(height: 8),
-
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => _showSnack(
+                    'Entre em contato com o suporte para recuperar sua senha.',
+                  ),
                   child: const Text(
                     "Esqueceu a senha?",
                     style: TextStyle(color: Color(0xFFB89278)),
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -150,27 +143,35 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: login,
-                  child: const Text(
-                    "Entrar",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
+                  onPressed: loading ? null : login,
+                  child: loading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          "Entrar",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFB89278)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(22),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                 ),
                 onPressed: () => Navigator.pushNamed(context, "/register_org"),
                 child: const Text(
@@ -178,9 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Color(0xFFB89278)),
                 ),
               ),
-
               const SizedBox(height: 16),
-
               TextButton(
                 onPressed: () => Navigator.pushNamed(context, "/register"),
                 child: const Text(

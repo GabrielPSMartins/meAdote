@@ -1,4 +1,4 @@
-import 'package:sqflite/sqflite.dart';  // <-- importante
+import 'package:sqflite/sqflite.dart';
 import '../database/user_dao.dart';
 import '../models/user.dart';
 
@@ -9,23 +9,19 @@ class UserRepository {
     return _dao.login(email, password);
   }
 
-  Future<bool> register(String name, String email, String password) async {
+  Future<User?> getById(int id) {
+    return _dao.getById(id);
+  }
+
+  Future<bool> register(User user) async {
     try {
-      await _dao.insert(
-        User(
-          name: name,
-          email: email,
-          password: password,
-        ),
-      );
+      await _dao.insert(user);
       return true;
     } on DatabaseException catch (e) {
       if (e.isUniqueConstraintError()) {
         return false;
-      } else {
-        print('Erro no banco ao registrar usuário: $e');
-        rethrow;
       }
+      rethrow;
     }
   }
 }

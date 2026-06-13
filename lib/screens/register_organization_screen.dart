@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../models/user.dart';
+import '../repositories/user_repository.dart';
 
 class RegisterOrganizationScreen extends StatefulWidget {
   const RegisterOrganizationScreen({super.key});
@@ -10,6 +12,7 @@ class RegisterOrganizationScreen extends StatefulWidget {
 
 class _RegisterOrganizationScreenState
     extends State<RegisterOrganizationScreen> {
+  final userRepo = UserRepository();
   bool acceptedTerms = false;
   String? _selectedType;
 
@@ -65,7 +68,7 @@ class _RegisterOrganizationScreenState
   }
 
   // ------------------ VALIDAÇÃO ------------------
-  void _validateAndSubmit() {
+  Future<void> _validateAndSubmit() async {
     if (orgNome.text.trim().isEmpty) return _showError("Preencha o nome da organização.");
     if (orgCnpj.text.trim().isEmpty) return _showError("Informe o CNPJ.");
     if (_selectedType == null) return _showError("Selecione o tipo da organização.");
@@ -85,9 +88,25 @@ class _RegisterOrganizationScreenState
       return _showError("Você precisa aceitar os termos.");
     }
 
+    final success = await userRepo.register(User(
+      name: respNome.text.trim(),
+      email: respEmail.text.trim(),
+      password: respSenha.text.trim(),
+      role: 'ong',
+      phone: respTelefone.text.trim(),
+      orgName: orgNome.text.trim(),
+      orgCnpj: orgCnpj.text.trim(),
+      orgType: _selectedType,
+    ));
+
+    if (!success) {
+      return _showError("Este email já está cadastrado.");
+    }
+
     _showSuccess("Organização cadastrada com sucesso!");
 
     Future.delayed(const Duration(milliseconds: 900), () {
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     });
   }

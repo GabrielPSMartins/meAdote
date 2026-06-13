@@ -88,7 +88,10 @@ class _HomePageState extends State<HomePage> {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color(0xFFB89278),
-        onPressed: () => Navigator.pushNamed(context, '/create_post'),
+        onPressed: () async {
+          final created = await Navigator.pushNamed(context, '/create_post');
+          if (created == true) _loadPosts();
+        },
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );

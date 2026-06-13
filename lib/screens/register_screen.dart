@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../models/user.dart';
+import '../repositories/user_repository.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -9,6 +10,8 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final userRepo = UserRepository();
+
   // ------------------ CONTROLLERS ------------------
   final nome = TextEditingController();
   final email = TextEditingController();
@@ -83,14 +86,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return _showError("Você precisa aceitar os termos.");
     }
     
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('nome', nome.text.trim());
-    await prefs.setString('email', email.text.trim());
-    await prefs.setString('senha', senha.text.trim());
+    final success = await userRepo.register(User(
+      name: nome.text.trim(),
+      email: email.text.trim(),
+      password: senha.text.trim(),
+      role: 'adopter',
+      phone: telefone.text.trim(),
+      city: cidade.text.trim().isEmpty ? null : cidade.text.trim(),
+      state: estado.text.trim().isEmpty ? null : estado.text.trim(),
+    ));
+
+    if (!success) {
+      return _showError("Este email já está cadastrado.");
+    }
 
     _showSuccess("Conta criada com sucesso!");
 
     Future.delayed(const Duration(milliseconds: 900), () {
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     });
   }

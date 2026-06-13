@@ -19,7 +19,6 @@ import 'screens/register_organization_screen.dart';
 // Internal pages
 import 'pages/profile/profile_page.dart';
 import 'pages/profile/user_requests_page.dart';
-import 'pages/home/home_page.dart';
 import 'pages/home/interest_page.dart';
 import 'pages/home/create_post_page.dart';
 
@@ -58,6 +57,7 @@ class MeAdoteApp extends StatelessWidget {
             return MaterialApp(
               title: 'MeAdote',
               debugShowCheckedModeBanner: false,
+              theme: AppTheme.darkTheme(),
               darkTheme: AppTheme.darkTheme(),
               themeMode: mode,
 

@@ -57,7 +57,7 @@ class HomePostCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  post.description ?? "",
+                  post.description,
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 14,

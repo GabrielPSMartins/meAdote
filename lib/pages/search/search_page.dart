@@ -19,7 +19,7 @@ class SearchPage extends StatelessWidget {
             const SizedBox(height: 8),
             
             const TextField(
-              decoration: InputDecoration(hintText: 'Search'),
+              decoration: InputDecoration(hintText: 'Buscar por nome ou raça...'),
             ),
 
             const SizedBox(height: 8),

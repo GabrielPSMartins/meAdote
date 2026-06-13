@@ -9,7 +9,7 @@ class UserDAO {
     return await db.insert(
       'users',
       user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.abort, 
+      conflictAlgorithm: ConflictAlgorithm.abort,
     );
   }
 
@@ -27,5 +27,32 @@ class UserDAO {
       return User.fromMap(result.first);
     }
     return null;
+  }
+
+  Future<User?> getById(int id) async {
+    final db = await DatabaseProvider.instance.database;
+
+    final result = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return User.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<bool> emailExists(String email) async {
+    final db = await DatabaseProvider.instance.database;
+    final result = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+      limit: 1,
+    );
+    return result.isNotEmpty;
   }
 }

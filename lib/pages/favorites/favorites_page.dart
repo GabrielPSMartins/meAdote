@@ -14,8 +14,12 @@ class FavoritesPage extends StatelessWidget {
         child: Column(
           children: [
             const Text(
-              'Favorites',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              'Meus Favoritos',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(height: 12),
 

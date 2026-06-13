@@ -34,16 +34,19 @@ class HomeFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _chip("Todos", "todos"),
-        const SizedBox(width: 10),
-        _chip("Cachorros", "cachorro"),
-        const SizedBox(width: 10),
-        _chip("Gatos", "gato"),
-        const SizedBox(width: 10),
-        _chip("Outros", "outros"),
-      ],
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          _chip("Todos", "todos"),
+          const SizedBox(width: 10),
+          _chip("Disponíveis", "disponivel"),
+          const SizedBox(width: 10),
+          _chip("Perdidos", "perdido"),
+          const SizedBox(width: 10),
+          _chip("Encontrados", "encontrado"),
+        ],
+      ),
     );
   }
 }

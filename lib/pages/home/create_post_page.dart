@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../models/post.dart';
+import '../../repositories/post_repository.dart';
+import '../../services/auth_service.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -9,12 +12,88 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   String selectedType = "disponivel";
+  bool publishing = false;
 
   final titleController = TextEditingController();
   final descController = TextEditingController();
   final speciesController = TextEditingController();
   final breedController = TextEditingController();
   final locationController = TextEditingController();
+
+  final postRepo = PostRepository();
+
+  Future<void> _publish() async {
+    if (titleController.text.trim().isEmpty) {
+      _showSnack('Informe um título para a publicação.', isError: true);
+      return;
+    }
+    if (descController.text.trim().isEmpty) {
+      _showSnack('Informe uma descrição.', isError: true);
+      return;
+    }
+
+    setState(() => publishing = true);
+
+    try {
+      final userName = await AuthService.getUserName();
+      final city = await AuthService.getCity();
+      final state = await AuthService.getState();
+
+      String? postCity = city;
+      String? postState = state;
+
+      final location = locationController.text.trim();
+      if (location.isNotEmpty) {
+        final parts = location.split('-').map((e) => e.trim()).toList();
+        if (parts.length >= 2) {
+          postCity = parts.first;
+          postState = parts.last;
+        } else {
+          postCity = location;
+        }
+      }
+
+      final description = [
+        descController.text.trim(),
+        if (speciesController.text.trim().isNotEmpty)
+          'Espécie: ${speciesController.text.trim()}',
+        if (breedController.text.trim().isNotEmpty)
+          'Raça: ${breedController.text.trim()}',
+      ].join('\n');
+
+      final post = Post(
+        title: titleController.text.trim(),
+        description: description,
+        type: selectedType,
+        city: postCity,
+        state: postState,
+        userName: userName,
+      );
+
+      await postRepo.insertPost(post);
+
+      if (!mounted) return;
+      _showSnack('Publicação criada com sucesso!');
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      _showSnack('Erro ao publicar. Tente novamente.', isError: true);
+    } finally {
+      if (mounted) setState(() => publishing = false);
+    }
+  }
+
+  void _showSnack(String msg, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? Colors.redAccent : Colors.green.shade600,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +111,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         title: const Text("Nova Publicação",
             style: TextStyle(color: Colors.white)),
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Container(
@@ -42,7 +120,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white12),
           ),
-
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -55,19 +132,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ),
               ),
               const SizedBox(height: 16),
-
               _postTypeButtons(),
-
               const SizedBox(height: 20),
-
               _input("Título", "Descreva brevemente...", titleController),
               const SizedBox(height: 14),
-
               _input("Descrição", "Conte mais detalhes sobre o animal...",
                   descController,
                   maxLines: 3),
               const SizedBox(height: 14),
-
               Row(
                 children: [
                   Expanded(
@@ -75,18 +147,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child:
-                        _input("Raça", "Ex: Vira-lata", breedController),
+                    child: _input("Raça", "Ex: Vira-lata", breedController),
                   ),
                 ],
               ),
-
               const SizedBox(height: 14),
-
               _input("Localização", "Cidade - Estado", locationController),
-
               const SizedBox(height: 24),
-
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -106,7 +173,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () => _showSnack(
+                        'Upload de fotos disponível em breve.',
+                      ),
                       child: const Text(
                         "Escolher Fotos",
                         style: TextStyle(color: Colors.white),
@@ -115,9 +184,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -128,16 +195,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                  },
-                  child: const Text(
-                    "Publicar",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
+                  onPressed: publishing ? null : _publish,
+                  child: publishing
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          "Publicar",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
                 ),
               ),
             ],
@@ -147,7 +222,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  // ---------------- INPUT PADRÃO ----------------
   Widget _input(
     String label,
     String hint,
@@ -180,7 +254,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  // ---------------- BOTÕES DE TIPO ----------------
   Widget _postTypeButtons() {
     final selected = selectedType;
 

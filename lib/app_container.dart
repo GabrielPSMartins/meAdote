@@ -89,11 +89,11 @@ class _OngAppContainerState extends State<OngAppContainer> {
         unselectedItemColor: Colors.white70,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.campaign_outlined), label: "Campaigns"),
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Dashboard"),
-          BottomNavigationBarItem(icon: Icon(Icons.explore_outlined), label: "Explore"),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: "Início"),
+          BottomNavigationBarItem(icon: Icon(Icons.campaign_outlined), label: "Campanhas"),
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: "Painel"),
+          BottomNavigationBarItem(icon: Icon(Icons.explore_outlined), label: "Explorar"),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: "Perfil"),
         ],
       ),
     );
